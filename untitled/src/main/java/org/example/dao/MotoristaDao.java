@@ -2,7 +2,9 @@ package org.example.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import org.example.db.ConnectionFactory;
 import org.example.model.Motorista;
@@ -30,23 +32,38 @@ public class MotoristaDao {
         } 
     }
 
-    public void totalPorMotorista(){
+    public ArrayList<String> totalPorMotorista() throws SQLException{
         String command = """
                     SELECT
-                        m.nome. count(e.id)
+                        m.nome. COUNT(e.id)
                     FROM
                         motoristas m
                     JOIN
                         entregas e
                         ON
                             m.id = e.motorista_id
+                    GROUP BY
+                        m.nome
                 """;
 
         try (Connection conn = ConnectionFactory.conectar();
-             PreparedStatement stmt = ) {
-            
-        } catch (Exception e) {
-            // TODO: handle exception
+             PreparedStatement stmt = conn.prepareStatement(command);
+             ResultSet rs = stmt.executeQuery()) {
+
+            ArrayList<String> res = new ArrayList<>();
+
+            StringBuilder linha = new StringBuilder();
+
+            while (rs.next()) {
+                String nome_motorista = rs.getString("m.nome");
+                String total_entregas = rs.getString("COUNT(e.id)");
+
+                linha.append(nome_motorista).append(" | ").append(total_entregas);
+
+                res.add(linha.toString());
+            }
+
+            return res;
         }
     }
 }

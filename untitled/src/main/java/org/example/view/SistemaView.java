@@ -77,6 +77,21 @@ public class SistemaView {
                 listarEntregasCLienteMotorista();
                 break;
             }
+
+            case 8: {
+                totalPorMotorista();
+                break;
+            }
+
+            case 9: {
+                clientesComMaisVolume();
+                break;
+            }
+
+            case 10: {
+                pedidosPendentesPorEstado();
+                break;
+            }
         }
     }
     
@@ -249,6 +264,51 @@ public class SistemaView {
             ArrayList<String> listaEntregas = entregaDao.listarEntregasCLienteMotorista();
 
             for (String linha : listaEntregas) {
+                System.out.println(linha);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void totalPorMotorista() {
+        MotoristaDao motoristaDao = new MotoristaDao();
+
+        try {
+            ArrayList<String> relatorioPorMotorista = motoristaDao.totalPorMotorista();
+
+            for (String linha : relatorioPorMotorista) {
+                System.out.println(linha);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void clientesComMaisVolume() {
+        ClienteDao clienteDao = new ClienteDao();
+
+        try {
+            ArrayList<String> relatorioPorCliente = clienteDao.clientesComMaisVolume();
+
+            for (String linha : relatorioPorCliente) {
+                System.out.println(linha);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void pedidosPendentesPorEstado() {
+        System.out.println("Estado: ");
+        String estado = scanner.nextLine();
+
+        PedidoDao pedidoDao = new PedidoDao();
+
+        try {
+            ArrayList<String> relatorioPedidosPendentes = pedidoDao.pedidosPendentesPorEstado(estado);
+
+            for (String linha : relatorioPedidosPendentes) {
                 System.out.println(linha);
             }
         } catch (SQLException e) {
