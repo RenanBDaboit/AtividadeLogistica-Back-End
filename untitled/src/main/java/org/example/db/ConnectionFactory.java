@@ -5,11 +5,11 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConnectionFactory {
-    private static final String URL = "jdbc:mysql://localhost:3306/tripaDoKyogre?useSSL=false&serverTimezone=UTC";
+    private static final String URL = "jdbc:mysql://localhost:3306/LogisticaEntregas?useSSL=false&serverTimezone=UTC";
 
     private static final String USER = "root";
 
-    private static final String PASS = "root";
+    private static final String PASS = "mysqlPW";
 
     public static Connection conectar() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASS);
