@@ -315,4 +315,21 @@ public class SistemaView {
             e.printStackTrace();
         }
     }
+
+    public static void entregasAtrasadasPorCidade() {
+        System.out.println("Cidade: ");
+        String cidade = scanner.nextLine();
+
+        EntregaDao entregaDao = new EntregaDao();
+
+        try {
+            ArrayList<String> relatorioEntregasAtrasadas = entregaDao.entregasAtrasadasPorCidade(cidade);
+
+            for (String linha : relatorioEntregasAtrasadas) {
+                System.out.println(linha);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

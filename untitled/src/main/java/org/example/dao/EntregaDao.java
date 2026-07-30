@@ -99,4 +99,50 @@ public class EntregaDao {
             return res;
         }
     }
+
+    public ArrayList<String> entregasAtrasadasPorCidade(String cidade) throws SQLException {
+        String command = """
+                    SELECT 
+                        e.id, e.status, c.cidade
+                    FROM
+                        entregas e
+                    JOIN
+                        pedidos p
+                        ON
+                            e.pedido_id = p.id
+                    JOIN
+                        clientes c
+                        ON
+                            p.cliente_id = c.id
+                    WHERE
+                        c.cidade = ? 
+                        AND
+                        e.status = 'ATRASADA'
+                """;
+
+            try (Connection conn = ConnectionFactory.conectar();
+                 PreparedStatement stmt = conn.prepareStatement(command)) {
+                
+                stmt.setString(1, cidade);
+
+                ResultSet rs = stmt.executeQuery();
+
+                ArrayList<String> res = new ArrayList<>();
+
+                StringBuilder linha = new StringBuilder();
+    
+                while (rs.next()) {
+                    String entrega_id = rs.getString("e.id");
+                    String status = rs.getString("e.status");
+                    String cidade_retorno = rs.getString("c.cidade");
+    
+                    linha.append(entrega_id).append(" | ").append(status).append(" | ").append(cidade_retorno);
+    
+                    res.add(linha.toString());
+                }
+    
+                return res;
+
+            }
+    }
 }
