@@ -23,7 +23,7 @@ public class SistemaView {
 
     private static Scanner scanner = new Scanner(System.in);
 
-    public static void menu() {
+    public static int menu() {
         System.out.println("""
                         ==============================
                         \tBem-Vindo
@@ -127,11 +127,9 @@ public class SistemaView {
                 excluirMotorista();
                 break;
             }
-
-            case 0: {
-
-            }
         }
+
+        return opcao;
     }
     
     public static void cadastrarCliente(){
