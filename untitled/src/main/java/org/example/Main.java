@@ -18,8 +18,10 @@ public class Main {
             e.printStackTrace();
         }
 
-        while (true) {
-            SistemaView.menu();
+        int opcao = null;
+
+        while (opcao != 0) {
+            opcao = SistemaView.menu();
         }
     }
 }

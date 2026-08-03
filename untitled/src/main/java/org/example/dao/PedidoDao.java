@@ -72,4 +72,59 @@ public class PedidoDao {
         } 
     }
 
+    public ArrayList<String> buscarPedidoPorCpfCnpj(String cpf_cnpj) throws SQLException {
+        String command = """
+                    SELECT
+                        p.id, c.nome, c.cpf p.volume_m3, p.peso_kg
+                    FROM
+                        pedidos
+                    where
+                        cpf LIKE ?
+                """;
+
+        try (Connection conn = ConnectionFactory.conectar();
+             PreparedStatement stmt = conn.prepareStatement(command)) {
+            
+            stmt.setString(1, cpf_cnpj);
+
+            ResultSet rs = stmt.executeQuery();
+
+            ArrayList<String> res = new ArrayList<>();
+
+            StringBuilder linha = new StringBuilder();
+
+            while (rs.next()) {
+                String pedido_id = rs.getString("p.id");
+                String nome_cliente = rs.getString("c.nome");
+                String cpf_cnpj_digitado = rs.getString("c.cpf");
+                String volume_m3 = rs.getString("p.volume_m3");
+                String peso_kg = rs.getString("p.peso_kg");
+
+                linha.append(pedido_id).append(" | ").append(nome_cliente).append(" | ").append(cpf_cnpj_digitado).append(" | ").append(volume_m3).append(" | ").append(peso_kg);
+
+                res.add(linha.toString());
+            }
+
+            return res;
+        }
+    }
+
+    public void cancelarPedido(int id) throws SQLException{
+        String command = """
+                    UPDATE
+                        pedidos
+                    SET
+                        status = 'CANCELADO'
+                    WHERE
+                        id = ?
+                """;
+
+        try (Connection conn = ConnectionFactory.conectar();
+             PreparedStatement stmt = conn.prepareStatement(command)) {
+            
+            stmt.setInt(1, id);
+
+            stmt.executeUpdate();
+        } 
+    }
 }

@@ -120,29 +120,51 @@ public class EntregaDao {
                         e.status = 'ATRASADA'
                 """;
 
-            try (Connection conn = ConnectionFactory.conectar();
-                 PreparedStatement stmt = conn.prepareStatement(command)) {
-                
-                stmt.setString(1, cidade);
+        try (Connection conn = ConnectionFactory.conectar();
+                PreparedStatement stmt = conn.prepareStatement(command)) {
+            
+            stmt.setString(1, cidade);
 
-                ResultSet rs = stmt.executeQuery();
+            ResultSet rs = stmt.executeQuery();
 
-                ArrayList<String> res = new ArrayList<>();
+            ArrayList<String> res = new ArrayList<>();
 
-                StringBuilder linha = new StringBuilder();
-    
-                while (rs.next()) {
-                    String entrega_id = rs.getString("e.id");
-                    String status = rs.getString("e.status");
-                    String cidade_retorno = rs.getString("c.cidade");
-    
-                    linha.append(entrega_id).append(" | ").append(status).append(" | ").append(cidade_retorno);
-    
-                    res.add(linha.toString());
-                }
-    
-                return res;
+            StringBuilder linha = new StringBuilder();
 
+            while (rs.next()) {
+                String entrega_id = rs.getString("e.id");
+                String status = rs.getString("e.status");
+                String cidade_retorno = rs.getString("c.cidade");
+
+                linha.append(entrega_id).append(" | ").append(status).append(" | ").append(cidade_retorno);
+
+                res.add(linha.toString());
             }
+
+            return res;
+        }
+    }
+
+    public void excluirEntrega(int id) throws SQLException {
+        String command = """
+                    DELETE FROM
+                        historicoEntregas
+                    WHERE 
+                        entrega_id = ?;
+
+                    DELETE FROM
+                        entregas
+                    WHERE
+                        id = ?
+                """;
+
+        try (Connection conn = ConnectionFactory.conectar();
+             PreparedStatement stmt = conn.prepareStatement(command)) {
+            
+            stmt.setInt(1, id);
+            stmt.setInt(2, id);
+
+            stmt.executeUpdate();
+        }
     }
 }

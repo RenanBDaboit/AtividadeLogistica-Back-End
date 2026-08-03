@@ -39,6 +39,11 @@ public class SistemaView {
                         10 - Relatório: Pedidos Pendentes por Estado
                         11 - Relatório: Entregas Atrasadas por Cidade
                         12 - Buscar Pedido por CPF/CNPJ do Cliente 
+                        13 - Cancelar Pedido
+                        14 - Excluir Entrega (com validação)
+                        15 - Excluir Cliente (com verificação de dependência)
+                        16 - Excluir Motorista (com verificação de dependência)
+                        0 - Sair
                     """);
         int opcao = Integer.parseInt(scanner.nextLine());
 
@@ -91,6 +96,40 @@ public class SistemaView {
             case 10: {
                 pedidosPendentesPorEstado();
                 break;
+            }
+
+            case 11: {
+                entregasAtrasadasPorCidade();
+                break;
+            }
+
+            case 12: {
+                buscarPedidoPorCpfCnpj();
+                break;
+            }
+
+            case 13: {
+                cancelarPedido();
+                break;
+            }
+
+            case 14: {
+                excluirEntrega();
+                break;
+            }
+
+            case 15: {
+                excluirCliente();
+                break;
+            }
+
+            case 16: {
+                excluirMotorista();
+                break;
+            }
+
+            case 0: {
+
             }
         }
     }
@@ -330,6 +369,93 @@ public class SistemaView {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void buscarPedidoPorCpfCnpj() {
+        System.out.println("CPF/CNPJ: ");
+        String cpf_cnpj = scanner.nextLine();
+
+        PedidoDao pedidoDao = new PedidoDao();
+
+        try {
+            ArrayList<String> pedidosPorCpf = pedidoDao.buscarPedidoPorCpfCnpj(cpf_cnpj);
+
+            for (String linha : pedidosPorCpf) {
+                System.out.println(linha);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void cancelarPedido() {
+        System.out.println("ID: ");
+        int id = Integer.parseInt(scanner.nextLine());
+
+        PedidoDao pedidoDao = new PedidoDao();
+
+        try {
+            pedidoDao.cancelarPedido(id);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void excluirEntrega() {
+        System.out.println("ID: ");
+        int id = Integer.parseInt(scanner.nextLine());
+
+        System.out.println("Tem certeza que deseja excluir? Isso vai apagar a entrega do histórico também (S/N)");
+        char validacao = scanner.next().charAt(0);
+
+        if (validacao == 'S') {
+            
+            EntregaDao entregaDao = new EntregaDao();
+
+            try {
+                entregaDao.excluirEntrega(id);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void excluirCliente() {
+        System.out.println("ID: ");
+        int id = Integer.parseInt(scanner.nextLine());
+
+        System.out.println("Tem certeza que deseja excluir? Isso vai apagar todos os pedidos, entregas e dados no histórico do histórico também (S/N)");
+        char validacao = scanner.next().charAt(0);
+
+        if (validacao == 'S') {
+            
+            ClienteDao clienteDao = new ClienteDao();
+
+            try {
+                clienteDao.excluirCliente(id);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void excluirMotorista() {
+        System.out.println("ID: ");
+        int id = Integer.parseInt(scanner.nextLine());
+
+        System.out.println("Tem certeza que deseja excluir? Isso vai apagar todos as entregas e dados no histórico do histórico também (S/N)");
+        char validacao = scanner.next().charAt(0);
+
+        if (validacao == 'S') {
+            
+            MotoristaDao motoristaDao = new MotoristaDao();
+
+            try {
+                motoristaDao.excluirMotorista(id);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

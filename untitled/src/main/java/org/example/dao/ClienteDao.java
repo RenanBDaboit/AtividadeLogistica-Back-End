@@ -52,22 +52,74 @@ public class ClienteDao {
         try (Connection conn = ConnectionFactory.conectar();
              PreparedStatement stmt = conn.prepareStatement(command);
              ResultSet rs = stmt.executeQuery()) {
-            
-                ArrayList<String> res = new ArrayList<>();
+        
+            ArrayList<String> res = new ArrayList<>();
 
-                StringBuilder linha = new StringBuilder();
-    
-                while (rs.next()) {
-                    String nome_cliente = rs.getString("c.nome");
-                    String soma_volumes = rs.getString("SUM(p.volume_m3)");
-    
-                    linha.append(nome_cliente).append(" | ").append(soma_volumes);
-    
-                    res.add(linha.toString());
-                }
-    
-                return res;
+            StringBuilder linha = new StringBuilder();
 
+            while (rs.next()) {
+                String nome_cliente = rs.getString("c.nome");
+                String soma_volumes = rs.getString("SUM(p.volume_m3)");
+
+                linha.append(nome_cliente).append(" | ").append(soma_volumes);
+
+                res.add(linha.toString());
+            }
+
+            return res;
+        }
+    }
+
+    public void excluirCliente(int id) throws SQLException {
+        String command = """
+                    DELETE FROM
+                        historicoEntregas
+                    WHERE
+                        entrega_id IN (
+                            SELECT
+                                e.id
+                            FROM
+                                entregas e
+                            JOIN
+                                pedidos p
+                                ON
+                                    p.id = e.pedido_id
+                            WHERE
+                                p.cliente_id = ?
+                        );
+
+                    DELETE FROM
+                        entregas
+                    WHERE
+                        pedido_id IN (
+                            SELECT
+                                id
+                            FROM
+                                pedidos
+                            WHERE
+                                cliente_id = ?
+                        );
+
+                    DELETE FROM
+                        pedidos
+                    WHERE
+                        cliente_id = ?;
+
+                    DELETE FROM
+                        clientes
+                    WHERE
+                        id = ?
+                """;
+
+        try (Connection conn = ConnectionFactory.conectar();
+             PreparedStatement stmt = conn.prepareStatement(command)) {
+                
+            stmt.setInt(1, id);
+            stmt.setInt(2, id);
+            stmt.setInt(3, id);
+            stmt.setInt(4, id);
+
+            stmt.executeUpdate();
         }
     }
 }

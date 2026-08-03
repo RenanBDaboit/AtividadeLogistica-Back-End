@@ -66,4 +66,38 @@ public class MotoristaDao {
             return res;
         }
     }
+
+    public void excluirMotorista(int id) throws SQLException {
+        String command = """
+                    DELETE FROM
+                        historicoEntregas
+                    WHERE entrega_id IN (
+                        SELECT
+                            id
+                        FROM
+                            entregas
+                        WHERE
+                            motorista_id = ?;
+
+                    DELETE FROM
+                        entregas
+                    WHERE
+                        motorista_id = ?;
+
+                    DELETE FROM
+                        motorista
+                    WHERE
+                        id = ?
+                """;
+
+        try (Connection conn = ConnectionFactory.conectar();
+             PreparedStatement stmt = conn.prepareStatement(command)) {
+            
+            stmt.setInt(1, id);
+            stmt.setInt(2, id);
+            stmt.setInt(3, id);
+
+            stmt.executeUpdate();
+        } 
+    }
 }
