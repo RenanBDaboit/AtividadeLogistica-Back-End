@@ -35,7 +35,7 @@ public class MotoristaDao {
     public ArrayList<String> totalPorMotorista() throws SQLException{
         String command = """
                     SELECT
-                        m.nome. COUNT(e.id)
+                        m.nome, COUNT(e.id)
                     FROM
                         motoristas m
                     JOIN
@@ -52,13 +52,14 @@ public class MotoristaDao {
 
             ArrayList<String> res = new ArrayList<>();
 
-            StringBuilder linha = new StringBuilder();
-
             while (rs.next()) {
+
+                StringBuilder linha = new StringBuilder();
+
                 String nome_motorista = rs.getString("m.nome");
                 String total_entregas = rs.getString("COUNT(e.id)");
 
-                linha.append(nome_motorista).append(" | ").append(total_entregas);
+                linha.append(nome_motorista).append(" | ").append(total_entregas).append("\n");;
 
                 res.add(linha.toString());
             }
@@ -68,7 +69,7 @@ public class MotoristaDao {
     }
 
     public void excluirMotorista(int id) throws SQLException {
-        String command = """
+        String command1 = """
                     DELETE FROM
                         historicoEntregas
                     WHERE entrega_id IN (
@@ -77,27 +78,46 @@ public class MotoristaDao {
                         FROM
                             entregas
                         WHERE
-                            motorista_id = ?;
+                            motorista_id = ?
+                        )
+                """;
 
+        try (Connection conn = ConnectionFactory.conectar();
+             PreparedStatement stmt = conn.prepareStatement(command1)) {
+            
+            stmt.setInt(1, id);
+
+            stmt.executeUpdate();
+        } 
+
+        String command2 = """
                     DELETE FROM
                         entregas
                     WHERE
-                        motorista_id = ?;
+                        motorista_id = ?
+                """;
 
+        try (Connection conn = ConnectionFactory.conectar();
+             PreparedStatement stmt = conn.prepareStatement(command2)) {
+            
+            stmt.setInt(1, id);
+
+            stmt.executeUpdate();
+        }
+
+        String command3 = """
                     DELETE FROM
-                        motorista
+                        motoristas
                     WHERE
                         id = ?
                 """;
 
         try (Connection conn = ConnectionFactory.conectar();
-             PreparedStatement stmt = conn.prepareStatement(command)) {
+             PreparedStatement stmt = conn.prepareStatement(command3)) {
             
             stmt.setInt(1, id);
-            stmt.setInt(2, id);
-            stmt.setInt(3, id);
 
             stmt.executeUpdate();
-        } 
+        }
     }
 }

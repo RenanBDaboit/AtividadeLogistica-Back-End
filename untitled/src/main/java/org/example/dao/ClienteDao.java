@@ -55,9 +55,10 @@ public class ClienteDao {
         
             ArrayList<String> res = new ArrayList<>();
 
-            StringBuilder linha = new StringBuilder();
-
             while (rs.next()) {
+
+                StringBuilder linha = new StringBuilder();
+
                 String nome_cliente = rs.getString("c.nome");
                 String soma_volumes = rs.getString("SUM(p.volume_m3)");
 
@@ -71,7 +72,7 @@ public class ClienteDao {
     }
 
     public void excluirCliente(int id) throws SQLException {
-        String command = """
+        String command1 = """
                     DELETE FROM
                         historicoEntregas
                     WHERE
@@ -87,7 +88,17 @@ public class ClienteDao {
                             WHERE
                                 p.cliente_id = ?
                         );
+                """;
 
+        try (Connection conn = ConnectionFactory.conectar();
+             PreparedStatement stmt = conn.prepareStatement(command1)) {
+                
+            stmt.setInt(1, id);
+
+            stmt.executeUpdate();
+        }
+
+        String command2 = """
                     DELETE FROM
                         entregas
                     WHERE
@@ -99,12 +110,32 @@ public class ClienteDao {
                             WHERE
                                 cliente_id = ?
                         );
+                """;
 
+        try (Connection conn = ConnectionFactory.conectar();
+             PreparedStatement stmt = conn.prepareStatement(command2)) {
+                
+            stmt.setInt(1, id);
+
+            stmt.executeUpdate();
+        }
+
+        String command3 = """
                     DELETE FROM
                         pedidos
                     WHERE
                         cliente_id = ?;
+                """;
 
+        try (Connection conn = ConnectionFactory.conectar();
+             PreparedStatement stmt = conn.prepareStatement(command3)) {
+                
+            stmt.setInt(1, id);
+
+            stmt.executeUpdate();
+        }
+
+        String command4 = """
                     DELETE FROM
                         clientes
                     WHERE
@@ -112,12 +143,9 @@ public class ClienteDao {
                 """;
 
         try (Connection conn = ConnectionFactory.conectar();
-             PreparedStatement stmt = conn.prepareStatement(command)) {
+             PreparedStatement stmt = conn.prepareStatement(command4)) {
                 
             stmt.setInt(1, id);
-            stmt.setInt(2, id);
-            stmt.setInt(3, id);
-            stmt.setInt(4, id);
 
             stmt.executeUpdate();
         }

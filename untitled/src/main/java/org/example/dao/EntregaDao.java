@@ -58,7 +58,7 @@ public class EntregaDao {
     public ArrayList<String> listarEntregasCLienteMotorista() throws SQLException{
         String command = """
                     SELECT 
-                        c.nome, m.nome, e.data_saida, e.data_entrega, e.status
+                        c.nome, m.nome, e.data_saida, e.data_entrega, e.status_entrega
                     FROM
                         entregas e
                     JOIN
@@ -81,14 +81,15 @@ public class EntregaDao {
             
             ArrayList<String> res = new ArrayList<>();
 
-            StringBuilder linha = new StringBuilder();
-
             while (rs.next()) {
+
+                StringBuilder linha = new StringBuilder();
+
                 String nome_cliente = rs.getString("c.nome");
                 String nome_motorista = rs.getString("m.nome");
                 String data_saida = rs.getString("e.data_saida");
                 String data_entrega = rs.getString("e.data_entrega");
-                String status = rs.getString("status");
+                String status = rs.getString("status_entrega");
 
                 linha.append(nome_cliente).append(" | ").append(nome_motorista).append(" | ")
                     .append(data_saida).append(" | ").append(data_entrega).append(" | ").append(status);
@@ -103,7 +104,7 @@ public class EntregaDao {
     public ArrayList<String> entregasAtrasadasPorCidade(String cidade) throws SQLException {
         String command = """
                     SELECT 
-                        e.id, e.status, c.cidade
+                        e.id, e.status_entrega, c.cidade
                     FROM
                         entregas e
                     JOIN
@@ -117,7 +118,7 @@ public class EntregaDao {
                     WHERE
                         c.cidade = ? 
                         AND
-                        e.status = 'ATRASADA'
+                        e.status_entrega = 'ATRASADA'
                 """;
 
         try (Connection conn = ConnectionFactory.conectar();
@@ -129,11 +130,13 @@ public class EntregaDao {
 
             ArrayList<String> res = new ArrayList<>();
 
-            StringBuilder linha = new StringBuilder();
-
+            
             while (rs.next()) {
+                
+                StringBuilder linha = new StringBuilder();
+                
                 String entrega_id = rs.getString("e.id");
-                String status = rs.getString("e.status");
+                String status = rs.getString("e.status_entrega");
                 String cidade_retorno = rs.getString("c.cidade");
 
                 linha.append(entrega_id).append(" | ").append(status).append(" | ").append(cidade_retorno);
@@ -146,23 +149,32 @@ public class EntregaDao {
     }
 
     public void excluirEntrega(int id) throws SQLException {
-        String command = """
+        String command1 = """
                     DELETE FROM
                         historicoEntregas
                     WHERE 
-                        entrega_id = ?;
+                        entrega_id = ?
+                """;
+                
+        try (Connection conn = ConnectionFactory.conectar();
+            PreparedStatement stmt = conn.prepareStatement(command1)) {
+            
+            stmt.setInt(1, id);
 
+            stmt.executeUpdate();
+        }
+
+        String command2 = """
                     DELETE FROM
                         entregas
                     WHERE
-                        id = ?
+                        id = ?  
                 """;
-
+            
         try (Connection conn = ConnectionFactory.conectar();
-             PreparedStatement stmt = conn.prepareStatement(command)) {
+             PreparedStatement stmt = conn.prepareStatement(command2)) {
             
             stmt.setInt(1, id);
-            stmt.setInt(2, id);
 
             stmt.executeUpdate();
         }

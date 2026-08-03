@@ -406,6 +406,7 @@ public class SistemaView {
 
         System.out.println("Tem certeza que deseja excluir? Isso vai apagar a entrega do histórico também (S/N)");
         char validacao = scanner.next().charAt(0);
+        scanner.nextLine();
 
         if (validacao == 'S') {
             
@@ -425,6 +426,7 @@ public class SistemaView {
 
         System.out.println("Tem certeza que deseja excluir? Isso vai apagar todos os pedidos, entregas e dados no histórico do histórico também (S/N)");
         char validacao = scanner.next().charAt(0);
+        scanner.nextLine();
 
         if (validacao == 'S') {
             
@@ -444,6 +446,7 @@ public class SistemaView {
 
         System.out.println("Tem certeza que deseja excluir? Isso vai apagar todos as entregas e dados no histórico do histórico também (S/N)");
         char validacao = scanner.next().charAt(0);
+        scanner.nextLine();
 
         if (validacao == 'S') {
             

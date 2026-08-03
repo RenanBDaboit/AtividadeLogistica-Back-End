@@ -36,7 +36,7 @@ public class PedidoDao {
     public ArrayList<String> pedidosPendentesPorEstado(String estado) throws SQLException{
         String command = """
                     SELECT
-                        p.id, p.status, c.estado
+                        p.id, p.status_pedido, c.estado
                     FROM 
                         pedidos p
                     JOIN
@@ -56,11 +56,12 @@ public class PedidoDao {
 
             ArrayList<String> res = new ArrayList<>();
 
-            StringBuilder linha = new StringBuilder();
-
             while (rs.next()) {
+
+                StringBuilder linha = new StringBuilder();
+
                 String pedido_id = rs.getString("p.id");
-                String status = rs.getString("p.status");
+                String status = rs.getString("p.status_pedido");
                 String estado_retornado = rs.getString("c.estado");
 
                 linha.append(pedido_id).append(" | ").append(status).append(" | ").append(estado_retornado);
@@ -75,11 +76,15 @@ public class PedidoDao {
     public ArrayList<String> buscarPedidoPorCpfCnpj(String cpf_cnpj) throws SQLException {
         String command = """
                     SELECT
-                        p.id, c.nome, c.cpf p.volume_m3, p.peso_kg
+                        p.id, c.nome, c.cpf, p.volume_m3, p.peso_kg
                     FROM
-                        pedidos
-                    where
-                        cpf LIKE ?
+                        pedidos p 
+                    JOIN
+                        clientes c
+                        ON
+                            c.id = p.cliente_id
+                    WHERE
+                        c.cpf LIKE ?
                 """;
 
         try (Connection conn = ConnectionFactory.conectar();
@@ -91,16 +96,18 @@ public class PedidoDao {
 
             ArrayList<String> res = new ArrayList<>();
 
-            StringBuilder linha = new StringBuilder();
-
             while (rs.next()) {
+
+                StringBuilder linha = new StringBuilder();
+
                 String pedido_id = rs.getString("p.id");
                 String nome_cliente = rs.getString("c.nome");
                 String cpf_cnpj_digitado = rs.getString("c.cpf");
                 String volume_m3 = rs.getString("p.volume_m3");
                 String peso_kg = rs.getString("p.peso_kg");
 
-                linha.append(pedido_id).append(" | ").append(nome_cliente).append(" | ").append(cpf_cnpj_digitado).append(" | ").append(volume_m3).append(" | ").append(peso_kg);
+                linha.append(pedido_id).append(" | ").append(nome_cliente).append(" | ")
+                    .append(cpf_cnpj_digitado).append(" | ").append(volume_m3).append(" | ").append(peso_kg);
 
                 res.add(linha.toString());
             }
@@ -114,7 +121,7 @@ public class PedidoDao {
                     UPDATE
                         pedidos
                     SET
-                        status = 'CANCELADO'
+                        status_pedido = 'CANCELADO'
                     WHERE
                         id = ?
                 """;
