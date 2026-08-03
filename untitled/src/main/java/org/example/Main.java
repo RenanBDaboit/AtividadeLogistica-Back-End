@@ -18,7 +18,7 @@ public class Main {
             e.printStackTrace();
         }
 
-        int opcao = null;
+        int opcao = 1;
 
         while (opcao != 0) {
             opcao = SistemaView.menu();
