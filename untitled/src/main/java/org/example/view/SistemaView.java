@@ -2,16 +2,15 @@ package org.example.view;
 
 import org.example.dao.ClienteDao;
 import org.example.dao.EntregaDao;
-import org.example.dao.HistoricoEntregaDao;
 import org.example.dao.MotoristaDao;
 import org.example.dao.PedidoDao;
 import org.example.enums.StatusEntrega;
 import org.example.enums.StatusPedido;
-import org.example.model.Cliente;
-import org.example.model.Entrega;
-import org.example.model.HistoricoEntrega;
-import org.example.model.Motorista;
-import org.example.model.Pedido;
+import org.example.services.ClienteService;
+import org.example.services.EntregaService;
+import org.example.services.HistoricoEntregaService;
+import org.example.services.MotoristaService;
+import org.example.services.PedidoService;
 
 import java.sql.Date;
 import java.sql.SQLException;
@@ -22,6 +21,12 @@ import java.util.ArrayList;
 public class SistemaView {
 
     private static Scanner scanner = new Scanner(System.in);
+
+    private static final ClienteService clienteService = new ClienteService();
+    private static final MotoristaService motoristaService = new MotoristaService();
+    private static final PedidoService pedidoService = new PedidoService();
+    private static final EntregaService entregaService = new EntregaService();
+    private static final HistoricoEntregaService historicoEntregaService = new HistoricoEntregaService();
 
     public static int menu() {
         System.out.println("""
@@ -148,14 +153,10 @@ public class SistemaView {
         System.out.println("Estado: ");
         String estado = scanner.nextLine();
 
-        ClienteDao clienteDao = new ClienteDao();
-
-        var cliente = new Cliente(nome, cpf_cnpj, endereco, cidade, estado);
-        
-        try {
-            clienteDao.cadastrarCliente(cliente);
-        } catch (SQLException e) {
-            e.printStackTrace();
+        try{
+            clienteService.cadastrarCliente(nome, cpf_cnpj, endereco, cidade, estado);
+        } catch (RuntimeException e) {
+            System.out.println(e);
         }
     }
 
@@ -171,15 +172,11 @@ public class SistemaView {
 
         System.out.println("Cidade base: ");
         String cidade_base = scanner.nextLine();
-
-        MotoristaDao motoristaDao = new MotoristaDao();
-
-        var motorista = new Motorista(nome, cnh, veiculo, cidade_base);
         
         try {
-            motoristaDao.cadastrarMotorista(motorista);
-        } catch (SQLException e) {
-            e.printStackTrace();
+            motoristaService.cadastrarMotorista(nome, cnh, veiculo, cidade_base);
+        } catch (RuntimeException e) {
+            System.out.println(e);
         }
     }    
 
@@ -197,14 +194,10 @@ public class SistemaView {
 
         StatusPedido status = StatusPedido.PENDENTE;
 
-        PedidoDao pedidoDao = new PedidoDao();
-
-        var pedido = new Pedido(cliente_id, data_pedido, volume_m3, peso_kg, status);
-
         try {
-            pedidoDao.criarPedido(pedido);
-        } catch (SQLException e) {
-            e.printStackTrace();
+            pedidoService.criarPedido(cliente_id, data_pedido, volume_m3, peso_kg, status);;
+        } catch (RuntimeException e) {
+            System.out.println(e);
         }
     }
 
@@ -218,17 +211,19 @@ public class SistemaView {
         Date data_saida = Date.valueOf(LocalDate.now());
 
         System.out.println("Data de entrega (AAAA-MM-DD): ");
-        Date data_entrega = Date.valueOf(scanner.nextLine());
+        Date data_entrega;
+        try {
+            data_entrega = Date.valueOf(scanner.nextLine());
+        } catch (IllegalArgumentException e) {
+            System.out.println("Erro: formato da data incorreto");
+            return;
+        }
 
         StatusEntrega status = StatusEntrega.EM_ROTA;
 
-        var entrega = new Entrega(pedido_id, motorista_id, data_saida, data_entrega, status);
-
-        EntregaDao entregaDao = new EntregaDao();
-
         try {
-            entregaDao.gerarEntrega(entrega);
-        } catch (SQLException e) {
+            entregaService.gerarEntrega(pedido_id, motorista_id, data_saida, data_entrega, status);
+        } catch (RuntimeException e) {
             e.printStackTrace();
         }
     }
@@ -242,14 +237,10 @@ public class SistemaView {
         System.out.println("Descrição: ");
         String descricao = scanner.nextLine();
 
-        var historicoEntrega = new HistoricoEntrega(entrega_id, data_evento, descricao);
-
-        HistoricoEntregaDao historicoEntregaDao = new HistoricoEntregaDao();
-
         try {
-            historicoEntregaDao.registrarEventoEntrega(historicoEntrega);
-        } catch (SQLException e) {
-            e.printStackTrace();
+            historicoEntregaService.registrarEventoEntrega(entrega_id, data_evento, descricao);
+        } catch (RuntimeException e) {
+            System.out.println(e);
         }
     }
 
@@ -285,54 +276,46 @@ public class SistemaView {
             }
         }
 
-        EntregaDao entregaDao = new EntregaDao();
-
         try {
-            entregaDao.atualizarStatusEntrega(entrega_id, status);
-        } catch (SQLException e) {
-            e.printStackTrace();
+            entregaService.atualizarStatusEntrega(entrega_id, status);
+        } catch (RuntimeException e) {
+            System.out.println(e);
         }
     }
 
     public static void listarEntregasCLienteMotorista(){
-        EntregaDao entregaDao = new EntregaDao();
-
         try {
-            ArrayList<String> listaEntregas = entregaDao.listarEntregasCLienteMotorista();
+            ArrayList<String> listaEntregas = entregaService.listarEntregasCLienteMotorista();
 
             for (String linha : listaEntregas) {
                 System.out.println(linha);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (RuntimeException e) {
+            System.out.println(e);
         }
     }
 
     public static void totalPorMotorista() {
-        MotoristaDao motoristaDao = new MotoristaDao();
-
         try {
-            ArrayList<String> relatorioPorMotorista = motoristaDao.totalPorMotorista();
+            ArrayList<String> relatorioPorMotorista = motoristaService.totalPorMotorista();
 
             for (String linha : relatorioPorMotorista) {
                 System.out.println(linha);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (RuntimeException e) {
+            System.out.println(e);
         }
     }
 
     public static void clientesComMaisVolume() {
-        ClienteDao clienteDao = new ClienteDao();
-
         try {
-            ArrayList<String> relatorioPorCliente = clienteDao.clientesComMaisVolume();
+            ArrayList<String> relatorioPorCliente = clienteService.clientesComMaisVolume();
 
             for (String linha : relatorioPorCliente) {
                 System.out.println(linha);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (RuntimeException e) {
+            System.out.println(e);
         }
     }
 
