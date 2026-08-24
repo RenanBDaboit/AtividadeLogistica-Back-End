@@ -67,7 +67,7 @@ public class ClienteService {
         }
     }
 
-    private void validarCidade(String cidade) throws RuntimeException{
+    public void validarCidade(String cidade) throws RuntimeException{
         if (cidade.isBlank()) {
             throw new RuntimeException("Erro: Cidade em branco");
         }

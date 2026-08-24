@@ -1,6 +1,7 @@
 package org.example.services;
 
 import org.example.dao.EntregaDao;
+import org.example.dao.PedidoDao;
 import org.example.enums.StatusEntrega;
 import org.example.model.Entrega;
 
@@ -11,6 +12,8 @@ import java.util.ArrayList;
 
 public class EntregaService {
     
+    private final ClienteService clienteService = new ClienteService();
+
     public void gerarEntrega(int pedido_id, int motorista_id, Date data_saida, Date data_entrega, StatusEntrega status) throws RuntimeException {
         validarPedidoId(pedido_id);
         validarMotoristaId(motorista_id);
@@ -58,6 +61,25 @@ public class EntregaService {
         validarListaEntregas(listaEntregas);
 
         return listaEntregas;
+    }
+
+    public ArrayList<String> entregasAtrasadasPorCidade(String cidade) throws RuntimeException{
+        
+        clienteService.validarCidade(cidade);
+        
+        EntregaDao entregaDao = new EntregaDao();
+
+        try {
+            ArrayList<String> relatorioEntregasAtrasadas = entregaDao.entregasAtrasadasPorCidade(cidade);
+
+            for (String linha : relatorioEntregasAtrasadas) {
+                System.out.println(linha);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     private void validarEntregaId(int entrega_id) throws RuntimeException{

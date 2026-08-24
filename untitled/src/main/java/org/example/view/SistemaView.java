@@ -323,16 +323,14 @@ public class SistemaView {
         System.out.println("Estado: ");
         String estado = scanner.nextLine();
 
-        PedidoDao pedidoDao = new PedidoDao();
-
         try {
-            ArrayList<String> relatorioPedidosPendentes = pedidoDao.pedidosPendentesPorEstado(estado);
+            ArrayList<String> relatorioPorEstado = pedidoService.pedidosPendentesPorEstado(estado);
 
-            for (String linha : relatorioPedidosPendentes) {
+            for (String linha : relatorioPorEstado) {
                 System.out.println(linha);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (RuntimeException e) {
+            System.out.println(e);
         }
     }
 
@@ -340,16 +338,14 @@ public class SistemaView {
         System.out.println("Cidade: ");
         String cidade = scanner.nextLine();
 
-        EntregaDao entregaDao = new EntregaDao();
-
         try {
-            ArrayList<String> relatorioEntregasAtrasadas = entregaDao.entregasAtrasadasPorCidade(cidade);
+            ArrayList<String> relatorioPorCidade = entregaService.entregasAtrasadasPorCidade(cidade);
 
-            for (String linha : relatorioEntregasAtrasadas) {
+            for (String linha : relatorioPorCidade) {
                 System.out.println(linha);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (RuntimeException e) {
+            System.out.println(e);
         }
     }
 
