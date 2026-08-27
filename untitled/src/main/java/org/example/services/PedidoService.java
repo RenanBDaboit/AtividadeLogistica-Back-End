@@ -40,11 +40,51 @@ public class PedidoService {
             for (String linha : relatorioPedidosPendentes) {
                 System.out.println(linha);
             }
+
+            return relatorioPedidosPendentes;
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
         return null;
+    }
+
+    public ArrayList<String> buscarPedidoPorCpfCnpj(String cpf_cnpj) throws RuntimeException{
+        clienteService.validarCpfCnpj(cpf_cnpj);
+        
+        PedidoDao pedidoDao = new PedidoDao();
+
+        try {
+            ArrayList<String> pedidosPorCpf = pedidoDao.buscarPedidoPorCpfCnpj(cpf_cnpj);
+
+            for (String linha : pedidosPorCpf) {
+                System.out.println(linha);
+            }
+
+            return pedidosPorCpf;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public void cancelarPedido(int id) throws RuntimeException {
+        validarId(id);
+
+        PedidoDao pedidoDao = new PedidoDao();
+
+        try {
+            pedidoDao.cancelarPedido(id);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void validarId(int id) throws RuntimeException{
+        if (id <= 0) {
+            throw new RuntimeException("Erro: ID do pedido inválido");
+        }
     }
 
     public void validarClienteId(int cliente_id) throws RuntimeException {
@@ -59,7 +99,7 @@ public class PedidoService {
         }
     }
 
-    public void validarPeso(double peso_kg) {
+    public void validarPeso(double peso_kg) throws RuntimeException {
         if (peso_kg <= 0) {
             throw new RuntimeException("Erro: Peso inválido");
         }

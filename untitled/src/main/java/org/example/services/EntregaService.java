@@ -82,7 +82,19 @@ public class EntregaService {
         return null;
     }
 
-    private void validarEntregaId(int entrega_id) throws RuntimeException{
+    public void excluirEntrega(int id) throws RuntimeException {
+        validarEntregaId(id);
+
+        EntregaDao entregaDao = new EntregaDao();
+
+        try {
+            entregaDao.excluirEntrega(id);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void validarEntregaId(int entrega_id) throws RuntimeException{
         if (entrega_id <= 0) {
             throw new RuntimeException("Erro: ID da entrega inválido");
         }
@@ -106,7 +118,7 @@ public class EntregaService {
         }
     }
 
-    public void validarStatus(StatusEntrega status) {
+    public void validarStatus(StatusEntrega status) throws RuntimeException {
         if (status == null) {
             throw new RuntimeException("Erro: Status da entrega vazio");
         }

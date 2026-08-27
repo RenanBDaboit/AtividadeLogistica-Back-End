@@ -353,15 +353,13 @@ public class SistemaView {
         System.out.println("CPF/CNPJ: ");
         String cpf_cnpj = scanner.nextLine();
 
-        PedidoDao pedidoDao = new PedidoDao();
-
         try {
-            ArrayList<String> pedidosPorCpf = pedidoDao.buscarPedidoPorCpfCnpj(cpf_cnpj);
+            ArrayList<String> pedidosPorCpf = pedidoService.buscarPedidoPorCpfCnpj(cpf_cnpj);
 
             for (String linha : pedidosPorCpf) {
                 System.out.println(linha);
             }
-        } catch (SQLException e) {
+        } catch (RuntimeException e) {
             e.printStackTrace();
         }
     }
@@ -370,11 +368,9 @@ public class SistemaView {
         System.out.println("ID: ");
         int id = Integer.parseInt(scanner.nextLine());
 
-        PedidoDao pedidoDao = new PedidoDao();
-
         try {
-            pedidoDao.cancelarPedido(id);
-        } catch (SQLException e) {
+            pedidoService.cancelarPedido(id);
+        } catch (RuntimeException e) {
             e.printStackTrace();
         }
     }
@@ -388,12 +384,9 @@ public class SistemaView {
         scanner.nextLine();
 
         if (validacao == 'S') {
-            
-            EntregaDao entregaDao = new EntregaDao();
-
             try {
-                entregaDao.excluirEntrega(id);
-            } catch (SQLException e) {
+                entregaService.excluirEntrega(id);
+            } catch (RuntimeException e) {
                 e.printStackTrace();
             }
         }
@@ -408,12 +401,9 @@ public class SistemaView {
         scanner.nextLine();
 
         if (validacao == 'S') {
-            
-            ClienteDao clienteDao = new ClienteDao();
-
             try {
-                clienteDao.excluirCliente(id);
-            } catch (SQLException e) {
+                clienteService.excluirCliente(id);
+            } catch (RuntimeException e) {
                 e.printStackTrace();
             }
         }
@@ -428,12 +418,9 @@ public class SistemaView {
         scanner.nextLine();
 
         if (validacao == 'S') {
-            
-            MotoristaDao motoristaDao = new MotoristaDao();
-
             try {
-                motoristaDao.excluirMotorista(id);
-            } catch (SQLException e) {
+                motoristaService.excluirMotorista(id);
+            } catch (RuntimeException e) {
                 e.printStackTrace();
             }
         }

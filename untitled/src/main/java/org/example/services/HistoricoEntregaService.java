@@ -23,13 +23,13 @@ public class HistoricoEntregaService {
         }
     }
 
-    private void validarEntregaId(int entrega_id) throws RuntimeException{
+    public void validarEntregaId(int entrega_id) throws RuntimeException{
         if (entrega_id <= 0) {
             throw new RuntimeException("Erro: ID da entrega inválido");
         }
     }
 
-    private void validarDescricao(String descricao) throws RuntimeException{
+    public void validarDescricao(String descricao) throws RuntimeException{
         if (descricao.isBlank()) {
             throw new RuntimeException("Erro: Descrição em branco");
         }

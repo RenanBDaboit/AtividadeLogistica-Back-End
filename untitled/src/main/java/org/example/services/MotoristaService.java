@@ -25,7 +25,7 @@ public class MotoristaService {
         }
     }
 
-    public ArrayList<String> totalPorMotorista() {
+    public ArrayList<String> totalPorMotorista() throws RuntimeException {
         ArrayList<String> relatorioPorMotorista = null;
 
         var motoristaDao = new MotoristaDao();
@@ -45,13 +45,31 @@ public class MotoristaService {
         return relatorioPorMotorista;
     }
 
-    private void validarNome(String nome) throws RuntimeException{
+    public void excluirMotorista(int id) throws RuntimeException {
+        validarId(id);
+
+        MotoristaDao motoristaDao = new MotoristaDao();
+
+        try {
+            motoristaDao.excluirMotorista(id);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void validarId(int id) throws RuntimeException{
+        if (id <= 0) {
+            throw new RuntimeException("Erro: ID do motorista inválido");
+        }
+    }
+
+    public void validarNome(String nome) throws RuntimeException{
         if (nome.isBlank()) {
             throw new RuntimeException("Erro: Nome em branco");
         }
     }
 
-    private void validarCnh(String cnh) throws RuntimeException{
+    public void validarCnh(String cnh) throws RuntimeException{
         if (cnh.isBlank()) {
             throw new RuntimeException("Erro: CNH em branco");
         }
@@ -61,19 +79,19 @@ public class MotoristaService {
         }
     }
 
-    private void validarVeiculo(String veiculo) throws RuntimeException {
+    public void validarVeiculo(String veiculo) throws RuntimeException {
         if (veiculo.isBlank()) {
             throw new RuntimeException("Erro: Veiculo em branco");
         }
     }
 
-    private void validarCidadeBase(String cidade_base) throws RuntimeException {
+    public void validarCidadeBase(String cidade_base) throws RuntimeException {
         if (cidade_base.isBlank()) {
             throw new RuntimeException("Erro: Cidade em branco");
         }
     }
 
-    private void validarListaMotorista(ArrayList<String> listaMotorista) throws RuntimeException{
+    public void validarListaMotorista(ArrayList<String> listaMotorista) throws RuntimeException{
         if (listaMotorista.isEmpty()) {
             throw new RuntimeException("Lista vazia");
         }

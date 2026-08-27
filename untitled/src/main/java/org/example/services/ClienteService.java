@@ -26,7 +26,7 @@ public class ClienteService {
         }
     }
 
-    public ArrayList<String> clientesComMaisVolume() {
+    public ArrayList<String> clientesComMaisVolume() throws RuntimeException {
         ClienteDao clienteDao = new ClienteDao();
 
         ArrayList<String> relatorioPorCliente = null;
@@ -46,13 +46,31 @@ public class ClienteService {
         return relatorioPorCliente;
     }
 
-    private void validarNome(String nome) throws RuntimeException {
+    public void excluirCliente(int id) throws RuntimeException {
+        validarId(id);
+
+        ClienteDao clienteDao = new ClienteDao();
+
+        try {
+            clienteDao.excluirCliente(id);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void validarId(int id) throws RuntimeException{
+        if (id <= 0) {
+            throw new RuntimeException("Erro: ID do cliente inválido");
+        }
+    }
+
+    public void validarNome(String nome) throws RuntimeException {
         if (nome.isBlank()) {
             throw new RuntimeException("Erro: Nome em branco");
         }
     }
 
-    private void validarCpfCnpj(String cpf_cnpj) throws RuntimeException{
+    public void validarCpfCnpj(String cpf_cnpj) throws RuntimeException{
         if (cpf_cnpj.isBlank()) {
             throw new RuntimeException("Erro: CPF/CNPJ em branco");
         }
@@ -61,7 +79,7 @@ public class ClienteService {
         }
     }
 
-    private void validarEndereco(String endereco) throws RuntimeException{
+    public void validarEndereco(String endereco) throws RuntimeException{
         if (endereco.isBlank()) {
             throw new RuntimeException("Erro: Endereço em branco");
         }
@@ -79,7 +97,7 @@ public class ClienteService {
         }
     }
 
-    private void validarListaClientes(ArrayList<String> listaClientes) throws RuntimeException {
+    public void validarListaClientes(ArrayList<String> listaClientes) throws RuntimeException {
         if (listaClientes.isEmpty()) {
             throw new RuntimeException("Lista vazia");
         }
