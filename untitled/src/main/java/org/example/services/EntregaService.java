@@ -1,7 +1,6 @@
 package org.example.services;
 
 import org.example.dao.EntregaDao;
-import org.example.dao.PedidoDao;
 import org.example.enums.StatusEntrega;
 import org.example.model.Entrega;
 

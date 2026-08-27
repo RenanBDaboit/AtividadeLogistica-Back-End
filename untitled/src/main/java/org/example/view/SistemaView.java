@@ -1,9 +1,5 @@
 package org.example.view;
 
-import org.example.dao.ClienteDao;
-import org.example.dao.EntregaDao;
-import org.example.dao.MotoristaDao;
-import org.example.dao.PedidoDao;
 import org.example.enums.StatusEntrega;
 import org.example.enums.StatusPedido;
 import org.example.services.ClienteService;
@@ -13,7 +9,6 @@ import org.example.services.MotoristaService;
 import org.example.services.PedidoService;
 
 import java.sql.Date;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Scanner;
 import java.util.ArrayList;
