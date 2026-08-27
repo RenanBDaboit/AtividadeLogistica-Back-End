@@ -13,7 +13,7 @@ public class ClienteDao {
 
     public void cadastrarCliente(Cliente cliente) throws SQLException {
         String command = """
-                    INSERT INTO clientes (
+                    INSERT INTO Cliente (
                         nome, cpf_cnpj, endereco, cidade, estado
                     ) values (
                         ?,?,?,?,?
@@ -38,9 +38,9 @@ public class ClienteDao {
                     SELECT
                         c.nome, SUM(p.volume_m3)
                     FROM
-                        clientes c
+                        Cliente c
                     JOIN
-                        pedidos p
+                        Pedido p
                         ON
                             c.id = p.cliente_id
                     GROUP BY
@@ -74,15 +74,15 @@ public class ClienteDao {
     public void excluirCliente(int id) throws SQLException {
         String command1 = """
                     DELETE FROM
-                        historicoEntregas
+                        HistoricoEntrega
                     WHERE
                         entrega_id IN (
                             SELECT
                                 e.id
                             FROM
-                                entregas e
+                                Entrega e
                             JOIN
-                                pedidos p
+                                Pedido p
                                 ON
                                     p.id = e.pedido_id
                             WHERE
@@ -100,13 +100,13 @@ public class ClienteDao {
 
         String command2 = """
                     DELETE FROM
-                        entregas
+                        Entrega
                     WHERE
                         pedido_id IN (
                             SELECT
                                 id
                             FROM
-                                pedidos
+                                Pedido
                             WHERE
                                 cliente_id = ?
                         );
@@ -122,7 +122,7 @@ public class ClienteDao {
 
         String command3 = """
                     DELETE FROM
-                        pedidos
+                        Pedido
                     WHERE
                         cliente_id = ?;
                 """;
@@ -137,7 +137,7 @@ public class ClienteDao {
 
         String command4 = """
                     DELETE FROM
-                        clientes
+                        Cliente
                     WHERE
                         id = ?
                 """;

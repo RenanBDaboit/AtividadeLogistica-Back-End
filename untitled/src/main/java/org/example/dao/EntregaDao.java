@@ -14,8 +14,8 @@ public class EntregaDao {
     
     public void gerarEntrega(Entrega entrega) throws SQLException {
         String command = """
-                    INSERT INTO entregas (
-                        pedido_id, motorista_id, data_saida, data_entrega, status_entrega
+                    INSERT INTO Entrega (
+                        pedido_id, motorista_id, data_saida, data_entrega, status
                     ) VALUES (
                         ?,?,?,?,?
                     )
@@ -38,7 +38,7 @@ public class EntregaDao {
     public void atualizarStatusEntrega(int id, StatusEntrega status) throws SQLException {
         String command = """
                     UPDATE 
-                        entregas 
+                        Entrega 
                     SET 
                         status = ?
                     WHERE 
@@ -58,19 +58,19 @@ public class EntregaDao {
     public ArrayList<String> listarEntregasCLienteMotorista() throws SQLException{
         String command = """
                     SELECT 
-                        c.nome, m.nome, e.data_saida, e.data_entrega, e.status_entrega
+                        c.nome, m.nome, e.data_saida, e.data_entrega, e.status
                     FROM
-                        entregas e
+                        Entrega e
                     JOIN
-                        motoristas m
+                        Motorista m
                         ON
                             e.motorista_id = m.id
                     JOIN
-                        pedidos p
+                        Pedido p
                         ON
                             e.pedido_id = p.id
                     JOIN
-                        clientes c
+                        Cliente c
                         ON
                             p.cliente_id = c.id
                 """;
@@ -89,7 +89,7 @@ public class EntregaDao {
                 String nome_motorista = rs.getString("m.nome");
                 String data_saida = rs.getString("e.data_saida");
                 String data_entrega = rs.getString("e.data_entrega");
-                String status = rs.getString("status_entrega");
+                String status = rs.getString("status");
 
                 linha.append(nome_cliente).append(" | ").append(nome_motorista).append(" | ")
                     .append(data_saida).append(" | ").append(data_entrega).append(" | ").append(status);
@@ -106,13 +106,13 @@ public class EntregaDao {
                     SELECT 
                         e.id, e.status_entrega, c.cidade
                     FROM
-                        entregas e
+                        Entrega e
                     JOIN
-                        pedidos p
+                        Pedido p
                         ON
                             e.pedido_id = p.id
                     JOIN
-                        clientes c
+                        Cliente c
                         ON
                             p.cliente_id = c.id
                     WHERE
@@ -151,7 +151,7 @@ public class EntregaDao {
     public void excluirEntrega(int id) throws SQLException {
         String command1 = """
                     DELETE FROM
-                        historicoEntregas
+                        HistoricoEntrega
                     WHERE 
                         entrega_id = ?
                 """;
@@ -166,7 +166,7 @@ public class EntregaDao {
 
         String command2 = """
                     DELETE FROM
-                        entregas
+                        Entrega
                     WHERE
                         id = ?  
                 """;

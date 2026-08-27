@@ -74,7 +74,7 @@ public class ClienteService {
         if (cpf_cnpj.isBlank()) {
             throw new RuntimeException("Erro: CPF/CNPJ em branco");
         }
-        if (!(cpf_cnpj.length() == 11) || !(cpf_cnpj.length() == 14)) {
+        if (!(cpf_cnpj.length() == 11) && !(cpf_cnpj.length() == 14)) {
             throw new RuntimeException("Erro: CPF/CNPJ com formato errado ou digitos faltando, escreva somente os digitos do código");
         }
     }

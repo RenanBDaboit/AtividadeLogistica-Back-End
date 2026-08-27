@@ -13,8 +13,8 @@ public class PedidoDao {
     
     public void criarPedido(Pedido pedido) throws SQLException {
         String command = """
-                    INSERT INTO pedidos (
-                        cliente_id, data_pedido, volume_m3, peso_kg, status_pedido
+                    INSERT INTO Pedido (
+                        cliente_id, data_pedido, volume_m3, peso_kg, status
                     ) VALUES (
                         ?,?,?,?,?
                     )
@@ -38,9 +38,9 @@ public class PedidoDao {
                     SELECT
                         p.id, p.status_pedido, c.estado
                     FROM 
-                        pedidos p
+                        Pedido p
                     JOIN
-                        clientes c
+                        Cliente c
                         ON
                             c.id = p.cliente_id
                     WHERE
@@ -78,9 +78,9 @@ public class PedidoDao {
                     SELECT
                         p.id, c.nome, c.cpf, p.volume_m3, p.peso_kg
                     FROM
-                        pedidos p 
+                        Pedido p 
                     JOIN
-                        clientes c
+                        Cliente c
                         ON
                             c.id = p.cliente_id
                     WHERE
@@ -119,7 +119,7 @@ public class PedidoDao {
     public void cancelarPedido(int id) throws SQLException{
         String command = """
                     UPDATE
-                        pedidos
+                        Pedido
                     SET
                         status_pedido = 'CANCELADO'
                     WHERE

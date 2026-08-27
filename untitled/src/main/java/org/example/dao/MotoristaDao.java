@@ -13,7 +13,7 @@ public class MotoristaDao {
     
     public void cadastrarMotorista(Motorista motorista) throws SQLException {
         String command = """
-                    INSERT INTO motoristas (
+                    INSERT INTO Motorista (
                         nome, cnh, veiculo, cidade_base
                     ) VALUES (
                         ?,?,?,?
@@ -37,9 +37,9 @@ public class MotoristaDao {
                     SELECT
                         m.nome, COUNT(e.id)
                     FROM
-                        motoristas m
+                        Motorista m
                     JOIN
-                        entregas e
+                        Entrega e
                         ON
                             m.id = e.motorista_id
                     GROUP BY
@@ -71,12 +71,12 @@ public class MotoristaDao {
     public void excluirMotorista(int id) throws SQLException {
         String command1 = """
                     DELETE FROM
-                        historicoEntregas
+                        HistoricoEntrega
                     WHERE entrega_id IN (
                         SELECT
                             id
                         FROM
-                            entregas
+                            Entrega
                         WHERE
                             motorista_id = ?
                         )
@@ -92,7 +92,7 @@ public class MotoristaDao {
 
         String command2 = """
                     DELETE FROM
-                        entregas
+                        Entrega
                     WHERE
                         motorista_id = ?
                 """;
@@ -107,7 +107,7 @@ public class MotoristaDao {
 
         String command3 = """
                     DELETE FROM
-                        motoristas
+                        Motorista
                     WHERE
                         id = ?
                 """;

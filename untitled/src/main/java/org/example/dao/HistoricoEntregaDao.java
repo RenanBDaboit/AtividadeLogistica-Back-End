@@ -11,10 +11,10 @@ public class HistoricoEntregaDao {
     
     public void registrarEventoEntrega(HistoricoEntrega historicoEntrega) throws SQLException {
         String command = """
-                    INSERT INTO historicoEntregas (
+                    INSERT INTO HistoricoEntrega (
                         entrega_id, data_evento, descricao
                     ) VALUES (
-                        ?,?,?,?
+                        ?,?,?
                     )
                 """;
 

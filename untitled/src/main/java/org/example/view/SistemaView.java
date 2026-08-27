@@ -145,7 +145,7 @@ public class SistemaView {
         System.out.println("Cidade: ");
         String cidade = scanner.nextLine();
 
-        System.out.println("Estado: ");
+        System.out.println("Estado (SIGLA): ");
         String estado = scanner.nextLine();
 
         try{
