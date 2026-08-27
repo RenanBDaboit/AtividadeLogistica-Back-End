@@ -34,19 +34,17 @@ public class PedidoService {
         
         PedidoDao pedidoDao = new PedidoDao();
 
+        ArrayList<String> relatorioPedidosPendentes = null;
+
         try {
-            ArrayList<String> relatorioPedidosPendentes = pedidoDao.pedidosPendentesPorEstado(estado);
-
-            for (String linha : relatorioPedidosPendentes) {
-                System.out.println(linha);
-            }
-
-            return relatorioPedidosPendentes;
+            relatorioPedidosPendentes = pedidoDao.pedidosPendentesPorEstado(estado);
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return null;
+        validarListaPedidos(relatorioPedidosPendentes);
+
+        return relatorioPedidosPendentes;
     }
 
     public ArrayList<String> buscarPedidoPorCpfCnpj(String cpf_cnpj) throws RuntimeException{
@@ -54,19 +52,17 @@ public class PedidoService {
         
         PedidoDao pedidoDao = new PedidoDao();
 
+        ArrayList<String> pedidosPorCpf = null;
+
         try {
-            ArrayList<String> pedidosPorCpf = pedidoDao.buscarPedidoPorCpfCnpj(cpf_cnpj);
-
-            for (String linha : pedidosPorCpf) {
-                System.out.println(linha);
-            }
-
-            return pedidosPorCpf;
+            pedidosPorCpf = pedidoDao.buscarPedidoPorCpfCnpj(cpf_cnpj);
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return null;
+        validarListaPedidos(pedidosPorCpf);
+
+        return pedidosPorCpf;
     }
 
     public void cancelarPedido(int id) throws RuntimeException {
@@ -102,6 +98,12 @@ public class PedidoService {
     public void validarPeso(double peso_kg) throws RuntimeException {
         if (peso_kg <= 0) {
             throw new RuntimeException("Erro: Peso inválido");
+        }
+    }
+
+    public void validarListaPedidos(ArrayList<String> listaPedidos) throws RuntimeException {
+        if (listaPedidos.isEmpty()) {
+            throw new RuntimeException("Lista vazia");
         }
     }
 }

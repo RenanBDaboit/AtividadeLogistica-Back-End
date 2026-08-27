@@ -32,10 +32,6 @@ public class MotoristaService {
 
         try {
             relatorioPorMotorista = motoristaDao.totalPorMotorista();
-
-            for (String linha : relatorioPorMotorista) {
-                System.out.println(linha);
-            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

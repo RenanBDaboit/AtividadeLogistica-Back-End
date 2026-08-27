@@ -49,10 +49,6 @@ public class EntregaService {
 
         try {
             listaEntregas = entregaDao.listarEntregasCLienteMotorista();
-
-            for (String linha : listaEntregas) {
-                System.out.println(linha);
-            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -68,17 +64,17 @@ public class EntregaService {
         
         EntregaDao entregaDao = new EntregaDao();
 
-        try {
-            ArrayList<String> relatorioEntregasAtrasadas = entregaDao.entregasAtrasadasPorCidade(cidade);
+        ArrayList<String> relatorioEntregasAtrasadas = null;
 
-            for (String linha : relatorioEntregasAtrasadas) {
-                System.out.println(linha);
-            }
+        try {
+            relatorioEntregasAtrasadas = entregaDao.entregasAtrasadasPorCidade(cidade);
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return null;
+        validarListaEntregas(relatorioEntregasAtrasadas);
+
+        return relatorioEntregasAtrasadas;
     }
 
     public void excluirEntrega(int id) throws RuntimeException {

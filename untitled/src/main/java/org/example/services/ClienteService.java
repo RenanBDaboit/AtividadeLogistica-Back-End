@@ -33,10 +33,6 @@ public class ClienteService {
 
         try {
             relatorioPorCliente = clienteDao.clientesComMaisVolume();
-
-            for (String linha : relatorioPorCliente) {
-                System.out.println(linha);
-            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

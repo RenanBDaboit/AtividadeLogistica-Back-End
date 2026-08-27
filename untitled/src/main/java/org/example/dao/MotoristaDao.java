@@ -38,7 +38,7 @@ public class MotoristaDao {
                         m.nome, COUNT(e.id)
                     FROM
                         Motorista m
-                    JOIN
+                    LEFT JOIN
                         Entrega e
                         ON
                             m.id = e.motorista_id
@@ -59,7 +59,7 @@ public class MotoristaDao {
                 String nome_motorista = rs.getString("m.nome");
                 String total_entregas = rs.getString("COUNT(e.id)");
 
-                linha.append(nome_motorista).append(" | ").append(total_entregas).append("\n");;
+                linha.append(nome_motorista).append(" | ").append(total_entregas);
 
                 res.add(linha.toString());
             }

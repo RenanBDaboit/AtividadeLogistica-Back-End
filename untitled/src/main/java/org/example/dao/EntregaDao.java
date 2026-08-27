@@ -104,7 +104,7 @@ public class EntregaDao {
     public ArrayList<String> entregasAtrasadasPorCidade(String cidade) throws SQLException {
         String command = """
                     SELECT 
-                        e.id, e.status_entrega, c.cidade
+                        e.id, e.status, c.cidade
                     FROM
                         Entrega e
                     JOIN
@@ -118,7 +118,7 @@ public class EntregaDao {
                     WHERE
                         c.cidade = ? 
                         AND
-                        e.status_entrega = 'ATRASADA'
+                        e.status = 'ATRASADA'
                 """;
 
         try (Connection conn = ConnectionFactory.conectar();
@@ -136,7 +136,7 @@ public class EntregaDao {
                 StringBuilder linha = new StringBuilder();
                 
                 String entrega_id = rs.getString("e.id");
-                String status = rs.getString("e.status_entrega");
+                String status = rs.getString("e.status");
                 String cidade_retorno = rs.getString("c.cidade");
 
                 linha.append(entrega_id).append(" | ").append(status).append(" | ").append(cidade_retorno);
